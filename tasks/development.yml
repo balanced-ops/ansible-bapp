@@ -1,0 +1,48 @@
+---
+
+- file: path="{{ app_home }}/embedded" state=directory owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+  sudo: yes
+- apt: pkg={{ item }} state=present
+  with_items:
+    - virtualenvwrapper
+    - libpq-dev
+    - libxml2-dev
+    - libxslt1-dev
+    - python-dev
+    - libffi-dev
+    - expect
+  sudo: yes
+- user: name={{ app_user }} shell=/bin/bash home="{{ app_home }}"
+  sudo: yes
+- pip: name={{ item }} virtualenv="{{ app_home }}/embedded/"
+  with_items:
+    - ipdb
+    - pika
+- pip: name=pip  virtualenv="{{ app_home }}/embedded/" version=1.5.6
+
+- shell: pwd chdir="/home/{{ ansible_ssh_user }}/{{ app_name }}"
+
+- shell: echo $PATH
+  environment:
+    PATH: "{{ app_home }}/embedded/bin:{{ ansible_env.PATH }}"
+    KNOX_ENV: test
+
+- name: force {{ app_name }} into an editable install
+  tags: pip
+  pip: >
+    name='-e .[tests]'
+    chdir="/home/{{ ansible_ssh_user }}/{{ app_name }}"
+    executable="{{ app_home }}/embedded/bin/pip"
+
+- name: clean and recreate test db
+  shell: >
+    scripts/recreate-test
+    chdir=/home/{{ ansible_ssh_user }}/{{ app_name }}
+  environment:
+    PATH: "{{ app_home }}/embedded/bin:{{ ansible_env.PATH }}"
+    BALANCED_ENV: test
+
+- name: remove compiled python files
+  shell: >
+    find . -name '*.pyc' -delete
+    chdir=/home/{{ ansible_ssh_user }}/{{ app_name }}

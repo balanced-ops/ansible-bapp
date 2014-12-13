@@ -1,0 +1,25 @@
+---
+
+- name: user
+  user: name={{ app_user }} state=present shell=/bin/bash createhome=yes home={{ app_home }}
+
+- name: dirs
+  file: path={{ item }} owner={{ app_user }} group={{ app_group }} state=directory mode=0755
+  with_items:
+  - /etc/{{ app_name }}
+  - /var/lib/{{ app_name }}
+  - /var/run/{{ app_name }}
+  - /var/log/{{ app_name }}
+
+- name: conf
+  template: src={{ app_config }} dest=/etc/{{ app_name }}/{{ app_name }}.conf owner={{ app_user }} group={{ app_group }} mode=0644
+
+- name: log
+  template: src=log.conf.j2 dest=/etc/{{ app_name }}/log.conf owner={{ app_user }} group={{ app_group }} mode=0644
+
+- name: newrelic
+  template: src=newrelic.ini.j2 dest=/etc/{{ app_name }}/newrelic.ini owner={{ app_user }} group={{ app_group }} mode=0600
+  when: newrelic_license_key is defined and newrelic_license_key
+
+- name: log rotation
+  template: src=logrotate.j2 dest=/etc/logrotate.d/{{ app_name }} owner=root group=root mode=0644

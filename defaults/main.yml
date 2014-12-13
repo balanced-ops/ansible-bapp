@@ -1,0 +1,14 @@
+---
+
+app_user: knox
+app_group: knox
+app_name: knox
+app_home: /opt/knox
+app_config: config.conf.j2
+
+app_install_method:
+app_git_repo: ssh://git@github.com/balanced/{{ app_name }}.git
+app_git_commit: release
+app_apt_version: 1.0.0
+
+newrelic_license_key:

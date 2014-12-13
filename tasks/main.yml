@@ -1,0 +1,8 @@
+---
+
+- include: install_pip.yml
+  tags: [knox, knox-install]
+  when: knox_install_method == "pip"
+
+- include: base.yml
+  tags: [knox]

@@ -1,0 +1,26 @@
+---
+
+  - src: git+git@github.com:zenoamaro/ansible-supervisord.git
+    version: master
+    name: supervisord
+
+  - src: git+git@github.com:balanced-cookbooks/ansible-rsyslog.git
+    name: rsyslog
+    version: master
+
+  - src: git+git@github.com:balanced-cookbooks/ansible-postgresql-client.git
+    version: master
+    name: postgresql-client
+
+  - src: git+git@github.com:balanced-ops/ansible-base.git
+    version: eabbf29a08418410a259dcdd4525800c604a821f
+    name: base
+
+  - src: ANXS.postgresql
+    name: postgresql
+
+  - src: Stouts.rabbitmq
+    name: rabbitmq
+
+  - src: DavidWittman.redis
+    name: redis

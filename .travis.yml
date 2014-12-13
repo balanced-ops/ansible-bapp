@@ -1,0 +1,27 @@
+---
+addons:
+  postgresql: '9.3'
+services:
+  - elasticsearch
+  - rabbitmq
+  - redis-server
+before_install:
+  - sudo apt-get update -qq
+install:
+  - sudo apt-get install -qq python-apt python-pycurl python-pip
+  - sudo pip install ansible==1.8.0
+  - git clone git@github.com:balanced-cookbooks/ansible-postgresql-client.git ../postgresql-client
+  - git clone git@github.com:balanced-cookbooks/ansible-rsyslog.git ../rsyslog
+  - git clone git@github.com:Ansibles/monit.git ../monit
+  - git clone git@github.com:zenoamaro/ansible-supervisord.git ../supervisord
+env:
+  global:
+    - "PYPI_HOST=pypi.vandelay.io"
+    - "PYPI_INDEX=/balanced/prod/+simple/"
+    - "PYPI_USERNAME=omnibus"
+    - secure: "uH4OPBvgY4sYNpUssIC6WKulfAx2vgnO+a5XFtzjlJ8vZ1YhRWA2PCcvbDRZvu0Bk6uecCApBvVu/dllVa/bl15Lyzp+RQ0XAOJIPQlwvBxI95OAKmG9hXb/KaUiHBRKOEttJmKOmxwqWnSvzTaR4XYfcGZ8cPmZAV+z46axp1k="
+before_script:
+  - "printf '[defaults]\nroles_path = ../\n' > ansible.cfg"
+script:
+  - ansible-playbook --syntax-check -i test/inventory test/test.yml
+  - ansible-playbook -i test/inventory test/test.yml --connection=local --sudo

@@ -1,0 +1,10 @@
+---
+
+- name: start knox
+  service: name=knox state=started
+
+- name: restart knox
+  service: name=knox state=restarted
+
+- name: reload knox
+  service: name=knox state=reloaded

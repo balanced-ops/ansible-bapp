@@ -17,6 +17,8 @@
 
     users:
       - name: vagrant
+    groups:
+      - name: vagrant
     pypi_scheme: https
     pypi_username: omnibus
     pypi_password: "{{ lookup('citadel', '/omnibus/devpi_password').strip() }}"
@@ -32,7 +34,6 @@
     - defaults/main.yml
 
   roles:
-    - base
     - postgresql
     - rabbitmq
     - redis
@@ -46,4 +47,8 @@
 
     - name: install pip dirs for vagrant user
       include: roles/base/tasks/py.yml
+      tags: install-development
+
+    - name: install the app
+      include: tasks/development.yml
       tags: install-development

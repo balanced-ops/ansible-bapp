@@ -1,0 +1,49 @@
+---
+- name: PostgreSQL | add {{ app_name }} as a super user
+  tags: setup-db
+  postgresql_user: >-
+    name="{{ app_name }}"
+    password="{{ app_name }}"
+    encrypted=no
+    role_attr_flags=SUPERUSER
+    login_host=localhost
+    state=present
+  ignore_errors: yes
+
+- name: PostgreSQL | create the {{ app_name }} db
+  tags: setup-db
+  postgresql_db: >-
+    name="{{ app_name }}"
+    owner="{{ app_name }}"
+    encoding=UTF-8
+    lc_collate='en_US.UTF-8'
+    lc_ctype='en_US.UTF-8'
+    template=template0
+    login_host=localhost
+    login_user="{{ app_name }}"
+    login_password="{{ app_name }}"
+    state=present
+
+- name: Fetch deploy key?
+  debug: msg="{{ lookup('citadel', '/deploy_key/deploy.pem') }}"
+  tags: citadel
+
+- name: Write the deploy key for cloning
+  tags: deploy-key
+  sudo: false
+  lineinfile:
+    dest=~/.ssh/deploy_key
+    line="{{ lookup('citadel', '/deploy_key/deploy.pem') }}"
+    state=present
+    create=yes
+    mode='0400'
+
+# http://hakunin.com/six-ansible-practices
+- name: ensure github.com is a known host
+  tags: install
+  lineinfile:
+    dest: /root/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"

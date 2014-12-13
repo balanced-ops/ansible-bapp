@@ -1,4 +1,4 @@
-# KNOX
+# BAPP
 
 ## Knox [![Build Status](https://magnum.travis-ci.com/balanced-ops/ansible-bapp.svg?token=ykTaJtscxcuMJxYq2Nt5&branch=master)](https://magnum.travis-ci.com/balanced-ops/ansible-knox)
 

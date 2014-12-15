@@ -1,8 +1,8 @@
-# KNOX
+# Balanced Apps
 
-## Knox [![Build Status](https://magnum.travis-ci.com/balanced-ops/ansible-bapp.svg?token=ykTaJtscxcuMJxYq2Nt5&branch=master)](https://magnum.travis-ci.com/balanced-ops/ansible-bapp)
+## [![Build Status](https://magnum.travis-ci.com/balanced-ops/ansible-bapp.svg?token=ykTaJtscxcuMJxYq2Nt5&branch=master)](https://magnum.travis-ci.com/balanced-ops/ansible-bapp)
 
-### Local Development of Knox
+### Local Development of Knox|Precog|Balanced
 
 ```bash
 ~/code/balanced/ops $ git clone git@github.com:balanced-ops/ansible-bapp.git
@@ -15,4 +15,3 @@ synced_folders:
 - ~/code/balanced/knox" > .vagrantuser
 ~/code/balanced/knox $ vagrant up
 ```
-

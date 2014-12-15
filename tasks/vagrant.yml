@@ -1,4 +1,8 @@
 ---
+
+# Sets up the environment by installing the tools required for development
+# within the vagrant system. e.g. postgres, having access to the apt repo etc.
+
 - name: PostgreSQL | add {{ app_name }} as a super user
   tags: setup-db
   postgresql_user: >-
@@ -24,6 +28,16 @@
     login_password="{{ app_name }}"
     state=present
 
+- name: Install required extensions
+  tags: setup-db
+  shell: psql -c "CREATE EXTENSION IF NOT EXISTS {{ item }};"
+  sudo: yes
+  sudo_user: postgres
+  with_items:
+    - hstore
+  register: extension_cmd
+  changed_when: extension_cmd.stderr == ''
+
 - name: Fetch deploy key?
   debug: msg="{{ lookup('citadel', '/deploy_key/deploy.pem') }}"
   tags: citadel
@@ -47,3 +61,7 @@
     state: present
     line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
     regexp: "^github\\.com"
+
+- file: path=/home/{{ ansible_ssh_user }}/.aws state=directory owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+- name: configure AWS credentials
+  copy: content="[default]\nAWS_ACCESS_KEY_ID={{ lookup('env','AWS_ACCESS_KEY_ID') }}\nAWS_SECRET_ACCESS_KEY={{ lookup('env','AWS_SECRET_ACCESS_KEY') }}\n" dest=/home/{{ ansible_ssh_user }}/.aws/credentials

@@ -1,6 +1,11 @@
 ---
+# Installs the app by creating a virtualenv and installing some basic debugging
+# tools.
 
-- file: path="{{ app_home }}/embedded" state=directory owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+- file: path={{ item }} state=directory owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+  with_items:
+    - /home/{{ ansible_ssh_user }}/{{ app_name }}
+    - "{{ app_home }}/embedded"
   sudo: yes
 - apt: pkg={{ item }} state=present
   with_items:
@@ -11,16 +16,20 @@
     - python-dev
     - libffi-dev
     - expect
+    - git
   sudo: yes
-- user: name={{ app_user }} shell=/bin/bash home="{{ app_home }}"
+- name: create {{ app_user }} user
+  user: name={{ app_user }} shell=/bin/bash home="{{ app_home }}"
   sudo: yes
-- pip: name={{ item }} virtualenv="{{ app_home }}/embedded/"
+
+- name: install python development tools
+  pip: name={{ item }} virtualenv="{{ app_home }}/embedded/"
   with_items:
     - ipdb
     - pika
-- pip: name=pip  virtualenv="{{ app_home }}/embedded/" version=1.5.6
 
-- shell: pwd chdir="/home/{{ ansible_ssh_user }}/{{ app_name }}"
+- name: install pip 1.5.6
+  pip: name=pip  virtualenv="{{ app_home }}/embedded/" version=1.5.6
 
 - shell: echo $PATH
   environment:
@@ -41,7 +50,8 @@
   environment:
     PATH: "{{ app_home }}/embedded/bin:{{ ansible_env.PATH }}"
     BALANCED_ENV: test
-
+  sudo: yes
+  sudo_user: "{{ ansible_ssh_user }}"
 - name: remove compiled python files
   shell: >
     find . -name '*.pyc' -delete

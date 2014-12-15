@@ -1,0 +1,74 @@
+---
+
+- hosts: all
+  sudo: yes
+  vars:
+    citadel_bucket: 'balanced-citadel'
+    rabbitmq_vhosts:
+      - localhost
+    redis_bind: 127.0.0.1
+    postgresql_ext_install_contrib: yes
+    postgresql_client_encoding: utf8
+
+    app_user: precog
+    app_group: precog
+    app_name: precog
+    app_home: /opt/precog
+
+    users:
+      - name: vagrant
+    groups:
+      - name: vagrant
+    pypi_scheme: https
+    pypi_username: omnibus
+    pypi_password: "{{ lookup('citadel', '/omnibus/devpi_password').strip() }}"
+    pypi_host: pypi.vandelay.io
+    pypi_index: /balanced/prod/+simple/
+
+    app_install_method: git
+    app_apt_version: null
+    app_git_repo: ssh://git@github.com/balanced/{{ app_name }}.git
+    app_git_version: master
+
+  vars_files:
+    - defaults/main.yml
+
+  roles:
+    - postgresql
+    - rabbitmq
+    - redis
+
+  handlers:
+    - include: handlers/main.yml
+  pre_tasks:
+    - apt: pkg={{ item }} state=present
+      with_items:
+        - libpq-dev
+        - python-dev
+        - libxml2-dev
+        - libxslt1-dev
+        - libreadline6
+        - libblas-dev
+        - liblapack-dev
+        - gfortran
+        - libatlas-base-dev
+        - libevent-dev
+        - libffi-dev
+        - libssl-dev
+        - libxml2
+        - libxslt1.1
+        - libpq5
+        - ipython
+        - liblapack3gf
+        - libatlas3gf-base
+  tasks:
+    - name: setup vagrant box
+      include: tasks/vagrant.yml
+
+    - name: install pip dirs for vagrant user
+      include: roles/base/tasks/py.yml
+      tags: install-development
+
+    - name: install the app
+      include: tasks/development.yml
+      tags: install-development

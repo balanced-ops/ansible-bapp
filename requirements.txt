@@ -1,0 +1,5 @@
+ansible >= 1.8.2,<1.9
+troposphere ==0.6.2
+# at least this for boto metadata
+boto >=2.32.1
+con-fu >= 0.1.6,<0.2

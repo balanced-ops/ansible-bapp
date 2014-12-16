@@ -17,8 +17,6 @@ env:
     - "PYPI_USERNAME=omnibus"
     - secure: "uH4OPBvgY4sYNpUssIC6WKulfAx2vgnO+a5XFtzjlJ8vZ1YhRWA2PCcvbDRZvu0Bk6uecCApBvVu/dllVa/bl15Lyzp+RQ0XAOJIPQlwvBxI95OAKmG9hXb/KaUiHBRKOEttJmKOmxwqWnSvzTaR4XYfcGZ8cPmZAV+z46axp1k="
 before_script:
-  - "printf '[defaults]\nroles_path = ../\n' > ansible.cfg"
-  - "printf '[all]\n127.0.0.1' > inventory.local"
   - ansible-galaxy install -r requirements.yml -p `pwd`/roles --ignore-errors
 script:
   - ansible-playbook --syntax-check -i inventory.local knox.yml

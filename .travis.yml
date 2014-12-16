@@ -5,11 +5,8 @@ services:
   - elasticsearch
   - rabbitmq
   - redis-server
-before_install:
-  - sudo apt-get update -qq
 install:
-  - sudo apt-get install -qq python-apt python-pycurl python-pip
-  - sudo pip install ansible==1.8.2
+  - sudo pip install -r requirements.txt
 env:
   global:
     - "PYPI_HOST=pypi.vandelay.io"

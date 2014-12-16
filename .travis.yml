@@ -19,5 +19,5 @@ env:
 before_script:
   - ansible-galaxy install -r requirements.yml -p `pwd`/roles --ignore-errors
 script:
-  - ansible-playbook --syntax-check -i inventory.local knox.yml
-  - ansible-playbook --syntax-check -i inventory.local precog.yml
+  - ansible-playbook --syntax-check -i local.inventory knox.yml
+  - ansible-playbook --syntax-check -i local.inventory precog.yml

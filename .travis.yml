@@ -9,11 +9,7 @@ before_install:
   - sudo apt-get update -qq
 install:
   - sudo apt-get install -qq python-apt python-pycurl python-pip
-  - sudo pip install ansible==1.8.0
-  - git clone git@github.com:balanced-cookbooks/ansible-postgresql-client.git ../postgresql-client
-  - git clone git@github.com:balanced-cookbooks/ansible-rsyslog.git ../rsyslog
-  - git clone git@github.com:Ansibles/monit.git ../monit
-  - git clone git@github.com:zenoamaro/ansible-supervisord.git ../supervisord
+  - sudo pip install ansible==1.8.2
 env:
   global:
     - "PYPI_HOST=pypi.vandelay.io"
@@ -22,6 +18,8 @@ env:
     - secure: "uH4OPBvgY4sYNpUssIC6WKulfAx2vgnO+a5XFtzjlJ8vZ1YhRWA2PCcvbDRZvu0Bk6uecCApBvVu/dllVa/bl15Lyzp+RQ0XAOJIPQlwvBxI95OAKmG9hXb/KaUiHBRKOEttJmKOmxwqWnSvzTaR4XYfcGZ8cPmZAV+z46axp1k="
 before_script:
   - "printf '[defaults]\nroles_path = ../\n' > ansible.cfg"
+  - "printf '[all]\n127.0.0.1' > inventory.local"
+  - ansible-galaxy install -r requirements.yml -p `pwd`/roles --ignore-errors
 script:
-  - ansible-playbook --syntax-check -i test/inventory test/test.yml
-  - ansible-playbook -i test/inventory test/test.yml --connection=local --sudo
+  - ansible-playbook --syntax-check -i inventory.local knox.yml
+  - ansible-playbook --syntax-check -i inventory.local precog.yml

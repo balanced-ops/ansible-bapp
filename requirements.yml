@@ -24,3 +24,6 @@
 
   - src: DavidWittman.redis
     name: redis
+
+  - src: gpstathis.elasticsearch
+    name: elasticsearch

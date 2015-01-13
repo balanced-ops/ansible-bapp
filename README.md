@@ -6,6 +6,7 @@
 
 ```bash
 ~/code/balanced/ops $ git clone git@github.com:balanced-ops/ansible-bapp.git
+~/code/balanced/ops/ansible-bapp $ ansible-galaxy install -r requirements.yml -p $(pwd)/roles --force
 ~/code/balanced/ops $ git clone git@github.com:balanced-ops/vagabond.git
 ~/code/balanced $ git clone git@github.com:balanced/knox.git
 ~/code/balanced/knox $ ln -s ~/code/balanced/ops/vagabond/Vagrantfile Vagrantfile

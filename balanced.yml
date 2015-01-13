@@ -1,0 +1,57 @@
+---
+
+- hosts: all
+  sudo: yes
+  vars:
+    citadel_bucket: 'balanced-citadel'
+    rabbitmq_vhosts:
+      - localhost
+    redis_bind: 127.0.0.1
+    postgresql_ext_install_contrib: yes
+    postgresql_client_encoding: utf8
+
+    app_user: balanced
+    app_group: balanced
+    app_name: balanced
+    app_home: /opt/balanced
+
+    users:
+      - name: vagrant
+    groups:
+      - name: vagrant
+    pypi_scheme: https
+    pypi_username: omnibus
+    pypi_password: "{{ lookup('citadel', '/omnibus/devpi_password').strip() }}"
+    pypi_host: pypi.vandelay.io
+    pypi_index: /balanced/prod/+simple/
+
+    app_install_method: git
+    app_apt_version: null
+    app_git_repo: ssh://git@github.com/balanced/{{ app_name }}.git
+    app_git_version: master
+
+    elasticsearch_timezone: "Etc/UTC"
+
+  vars_files:
+    - defaults/main.yml
+
+  roles:
+    - elasticsearch
+    - postgresql
+    - rabbitmq
+    - redis
+
+  handlers:
+    - include: handlers/main.yml
+
+  tasks:
+    - name: setup vagrant box
+      include: tasks/vagrant.yml
+
+    - name: install pip dirs for vagrant user
+      include: roles/base/tasks/py.yml
+      tags: install-development
+
+    - name: install the app
+      include: tasks/development.yml
+      tags: install-development

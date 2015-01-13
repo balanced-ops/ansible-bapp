@@ -18,6 +18,7 @@
     - expect
     - git
   sudo: yes
+
 - name: create {{ app_user }} user
   user: name={{ app_user }} shell=/bin/bash home="{{ app_home }}"
   sudo: yes
@@ -42,6 +43,8 @@
     name='-e .[tests]'
     chdir="/home/{{ ansible_ssh_user }}/{{ app_name }}"
     executable="{{ app_home }}/embedded/bin/pip"
+  sudo: yes
+  sudo_user: "{{ ansible_ssh_user }}"
 
 - name: clean and recreate test db
   shell: >
@@ -52,6 +55,7 @@
     BALANCED_ENV: test
   sudo: yes
   sudo_user: "{{ ansible_ssh_user }}"
+
 - name: remove compiled python files
   shell: >
     find . -name '*.pyc' -delete

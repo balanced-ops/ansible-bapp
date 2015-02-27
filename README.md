@@ -16,5 +16,8 @@
 ansible_playbook: `pwd`/code/balanced/ops/ansible-bapp/knox.yml
 synced_folders:
 - ~/code/balanced/knox" > .vagrantuser
+~/code/balanced/knox $ vagrant plugin install nugrant
+~/code/balanced/knox $ vagrant plugin install vagrant-cachier
+~/code/balanced/knox $ vagrant plugin install vagrant-hostmanager
 ~/code/balanced/knox $ vagrant up
 ```
